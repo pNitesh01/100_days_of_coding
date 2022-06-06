@@ -42,19 +42,26 @@ def save():
         messagebox.showwarning(title="Oops", message="Please don't leave any of the field empty.")
     
     else:
-        with open(FILE, 'r') as data_file:
-            # reading old data
-            data = json.load(data_file)
+        try:
+            with open(FILE, 'r') as data_file:
+                # reading old data
+                data = json.load(data_file)
+                
+        except FileNotFoundError:
+            with open(FILE, 'w') as data_file:
+                json.dump(new_data, data_file, indent=4)
+        
+        else:        
             # updating old data with new data
             data.update(new_data)
-            
-        with open(FILE, 'w') as data_file:
-            # saving updated data
-            json.dump(data, data_file, indent=4)
-            
-            
-        website_entry.delete(0, END)
-        password_entry.delete(0, END)
+                
+            with open(FILE, 'w') as data_file:
+                # saving updated data
+                json.dump(data, data_file, indent=4)
+                
+        finally:    
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
